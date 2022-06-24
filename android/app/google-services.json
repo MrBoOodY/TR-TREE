@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "170225216623",
+    "project_id": "tr-tree",
+    "storage_bucket": "tr-tree.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:170225216623:android:813e045a53e22a02c7f19a",
+        "android_client_info": {
+          "package_name": "com.app.tr_tree"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "170225216623-op87uv9g8gp3tgc9ceukpk5hrq6cncrc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.app.tr_tree",
+            "certificate_hash": "7f841d1eb79b288f302d89cc151f529196143ef4"
+          }
+        },
+        {
+          "client_id": "170225216623-h5kkobjam1qck3hsut7vjc3d95f0hdgo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDBXqGDryPNqrzHSYEtku1qQIzvhTCm80I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "170225216623-h5kkobjam1qck3hsut7vjc3d95f0hdgo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
