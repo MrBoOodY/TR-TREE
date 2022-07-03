@@ -40,7 +40,17 @@ class _SplashScreenState extends State<SplashScreen> {
   navigate() async {
     final NavigatorState navigator = Navigator.of(context);
     await SharedPreferenceHelper.init();
-    if (await SharedPreferenceHelper.isLoggedIn) {
+    if (SharedPreferenceHelper.isLoggedIn) {
+      if (SharedPreferenceHelper.getUserType == 'admin') {
+        navigator.pushNamedAndRemoveUntil(
+            Routes.adminHomeView, (route) => false);
+      } else if (SharedPreferenceHelper.getUserType == 'shipp') {
+        navigator.pushNamedAndRemoveUntil(
+            Routes.shippCompHomeView, (route) => false);
+      } else {
+        navigator.pushNamedAndRemoveUntil(
+            Routes.userHomeView, (route) => false);
+      }
     } else {
       navigator.pushNamed(Routes.signInView);
     }

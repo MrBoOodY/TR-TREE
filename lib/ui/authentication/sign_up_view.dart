@@ -27,6 +27,8 @@ class SignUpViewState extends State<SignUpView> {
   TextEditingController email = TextEditingController();
 
   TextEditingController password = TextEditingController();
+  TextEditingController city = TextEditingController();
+  TextEditingController address = TextEditingController();
 
   bool isSignUpLoading = false;
 
@@ -91,6 +93,20 @@ class SignUpViewState extends State<SignUpView> {
               textController: email,
             ),
             const SizedBox(height: 20.0),
+            TextFieldWidget(
+              hint: 'المدينة',
+              validator: (value) =>
+                  AppValidator.validateFields(value, '', context),
+              textController: city,
+            ),
+            const SizedBox(height: 20.0),
+            TextFieldWidget(
+              hint: 'العنوان',
+              validator: (value) =>
+                  AppValidator.validateFields(value, '', context),
+              textController: address,
+            ),
+            const SizedBox(height: 20.0),
             PasswordFieldWidget(controller: password),
             const SizedBox(height: 40.0),
             SignButtonWidget(
@@ -109,10 +125,12 @@ class SignUpViewState extends State<SignUpView> {
                 Utils.showLoading(context);
                 await Provider.of<SignUpViewModel>(context, listen: false)
                     .signUpWithEmailAdress(
-                  email.text,
-                  password.text,
-                  '${firstName.text} ${lastName.text}',
-                  context,
+                  email: email.text,
+                  password: password.text,
+                  userName: '${firstName.text} ${lastName.text}',
+                  city: city.text,
+                  address: address.text,
+                  context: context,
                 );
                 isSignUpLoading = false;
                 setState(() {});

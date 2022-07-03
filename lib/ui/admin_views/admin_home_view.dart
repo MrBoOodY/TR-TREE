@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:tr_tree/constants/app_colors.dart';
+import 'package:tr_tree/ui/admin_views/admin_home_tab.dart';
+import 'package:tr_tree/ui/admin_views/admin_notification_tab.dart';
+import 'package:tr_tree/ui/admin_views/admin_orders_tab.dart';
 
 class AdminHomeView extends StatefulWidget {
   const AdminHomeView({Key? key}) : super(key: key);
@@ -8,10 +12,40 @@ class AdminHomeView extends StatefulWidget {
 }
 
 class _AdminHomeViewState extends State<AdminHomeView> {
+  int currentIndex = 0;
+  Widget currentPage() {
+    switch (currentIndex) {
+      case 0:
+        return const AdminHomeTab();
+      case 1:
+        return const AdminOrdersTab();
+      case 2:
+        return const AdminNotificationTab();
+      default:
+        return const AdminHomeTab();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(child: Container()),
+      body: SafeArea(child: currentPage()),
+      bottomNavigationBar: BottomNavigationBar(
+          selectedItemColor: AppColors.splashScreenColor,
+          elevation: 0,
+          currentIndex: currentIndex,
+          onTap: (index) {
+            currentIndex = index;
+            setState(() {});
+          },
+          items: const [
+            BottomNavigationBarItem(
+                icon: Icon(Icons.home_outlined), label: 'الرئيسية'),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.calendar_month_outlined), label: 'الطلبيات'),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.notifications_none), label: 'الاشعارات'),
+          ]),
     );
   }
 }

@@ -7,17 +7,24 @@ class SignButtonWidget extends StatelessWidget {
     required this.onPressed,
     required this.title,
     this.isOutLined = false,
+    this.width,
+    this.fontSize,
+    this.height,
   }) : super(key: key);
   final VoidCallback onPressed;
   final String title;
   final bool isOutLined;
+  final double? width;
+  final double? fontSize;
+  final double? height;
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
         style: ButtonStyle(
             backgroundColor: MaterialStateProperty.resolveWith((states) =>
                 isOutLined ? Colors.white : AppColors.splashScreenColor),
-            visualDensity: const VisualDensity(vertical: 3.5),
+            visualDensity: VisualDensity(
+                vertical: height ?? 3.5, horizontal: width ?? 0.0),
             shape: MaterialStateProperty.resolveWith((states) =>
                 RoundedRectangleBorder(
                     side: isOutLined
@@ -30,7 +37,7 @@ class SignButtonWidget extends StatelessWidget {
           title,
           style: TextStyle(
               color: isOutLined ? AppColors.splashScreenColor : Colors.white,
-              fontSize: 16,
+              fontSize: fontSize ?? 16,
               fontWeight: FontWeight.w600),
         ));
   }

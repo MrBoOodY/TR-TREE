@@ -10,8 +10,7 @@ class SignInViewModel {
       String email, String password, BuildContext context) async {
     final navigator = Navigator.of(context);
     try {
-      UserCredential userCredential =
-          await FirebaseAuth.instance.signInWithEmailAndPassword(
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
@@ -29,6 +28,7 @@ class SignInViewModel {
             .then((value) async {
           SharedPreferenceHelper.saveUserType(
               ((value.data() as Map)['userType']) ?? 'user');
+          SharedPreferenceHelper.saveUser(value.data() as Map);
           SharedPreferenceHelper.saveIsLoggedIn(true);
           final String userType = SharedPreferenceHelper.getUserType;
           navigator.pop();

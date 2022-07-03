@@ -2,7 +2,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 class LoadingWidget extends StatefulWidget {
-  const LoadingWidget({Key? key}) : super(key: key);
+  const LoadingWidget({Key? key, this.color}) : super(key: key);
+  final Color? color;
 
   @override
   LoadingWidgetState createState() => LoadingWidgetState();
@@ -133,6 +134,7 @@ class LoadingWidgetState extends State<LoadingWidget>
               thirdAnimation.value,
               fourthAnimation.value,
               fifthAnimation.value,
+              widget.color,
             ),
           ),
         ),
@@ -147,6 +149,7 @@ class MyPainter extends CustomPainter {
   final double thirdAngle;
   final double fourthAngle;
   final double fifthAngle;
+  final Color? color;
 
   MyPainter(
     this.firstAngle,
@@ -154,12 +157,13 @@ class MyPainter extends CustomPainter {
     this.thirdAngle,
     this.fourthAngle,
     this.fifthAngle,
+    this.color,
   );
 
   @override
   void paint(Canvas canvas, Size size) {
     Paint myArc = Paint()
-      ..color = Colors.white
+      ..color = color ?? Colors.white
       ..style = PaintingStyle.stroke
       ..strokeWidth = 5
       ..strokeCap = StrokeCap.round;

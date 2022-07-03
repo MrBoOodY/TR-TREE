@@ -9,6 +9,8 @@ import 'package:tr_tree/view_models/authentication/sign_in_view_model.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:tr_tree/view_models/authentication/sign_up_view_model.dart';
 
+import 'view_models/admin_view_models/product_view_model.dart';
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -34,15 +36,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        Provider(
-          create: (_) => SignInViewModel(),
-        ),
-        Provider(
-          create: (_) => SignUpViewModel(),
-        ),
-        Provider(
-          create: (_) => ForgetPassViewModel(),
-        ),
+        Provider(create: (_) => SignInViewModel()),
+        Provider(create: (_) => SignUpViewModel()),
+        Provider(create: (_) => ForgetPassViewModel()),
+        Provider(create: (_) => ProductViewModel()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

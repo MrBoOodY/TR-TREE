@@ -5,8 +5,13 @@ import 'package:tr_tree/constants/firebase_collections.dart';
 import 'package:tr_tree/utils/utils.dart';
 
 class SignUpViewModel {
-  Future<void> signUpWithEmailAdress(String email, String password,
-      String userName, BuildContext context) async {
+  Future<void> signUpWithEmailAdress(
+      {required String email,
+      required String password,
+      required String userName,
+      required String city,
+      required String address,
+      required BuildContext context}) async {
     final navigator = Navigator.of(context);
     try {
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
@@ -26,6 +31,8 @@ class SignUpViewModel {
         'displayName': user.displayName,
         'email': user.email,
         'uid': user.uid,
+        'city': city,
+        'address': address,
       }).onError((error, stackTrace) {
         if (kDebugMode) {
           print('Error save fire store: $error');

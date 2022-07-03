@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tr_tree/ui/admin_views/add_product_view.dart';
 import 'package:tr_tree/ui/admin_views/admin_home_view.dart';
 import 'package:tr_tree/ui/authentication/forget_password_view.dart';
 import 'package:tr_tree/ui/authentication/sign_in_view.dart';
@@ -16,6 +17,7 @@ class Routes {
   static const String adminHomeView = '/adminHomeView';
   static const String userHomeView = '/userHomeView';
   static const String shippCompHomeView = '/shippCompHomeView';
+  static const String addProductView = '/addProductView';
 
   static final routes = <String, WidgetBuilder>{
     signInView: (BuildContext context) => const SignInView(),
@@ -24,5 +26,6 @@ class Routes {
     adminHomeView: (BuildContext context) => const AdminHomeView(),
     shippCompHomeView: (BuildContext context) => const ShippCompHomeView(),
     userHomeView: (BuildContext context) => const UserHomeView(),
+    addProductView: (BuildContext context) => const AddProductView(),
   };
 }
