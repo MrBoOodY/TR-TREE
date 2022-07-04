@@ -8,11 +8,14 @@ class Utils {
     showDialog(
         context: context,
         barrierDismissible: false,
-        builder: (ctx) => const AlertDialog(
-              backgroundColor: Colors.transparent,
-              elevation: 0,
-              contentPadding: EdgeInsets.zero,
-              content: SizedBox(height: 350, child: LoadingWidget()),
+        builder: (ctx) => WillPopScope(
+              onWillPop: () async => false,
+              child: const AlertDialog(
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+                contentPadding: EdgeInsets.zero,
+                content: SizedBox(height: 350, child: LoadingWidget()),
+              ),
             ));
   }
 

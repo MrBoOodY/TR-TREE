@@ -23,14 +23,11 @@ class AdminItemWidget extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12),
           child:
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            ClipRRect(
-                borderRadius: BorderRadius.circular(borderRadius),
-                child: Image.network(
-                  product.image ?? '',
-                  height: 50.0,
-                  width: 50.0,
-                  fit: BoxFit.cover,
-                )),
+            Image.network(
+              product.image ?? '',
+              height: 50.0,
+              width: 50.0,
+            ),
             Text(product.name ?? ''),
             Text(
               '${product.pricePoints ?? '0'} نقطة',

@@ -14,7 +14,7 @@ class AppValidator {
     if (value == null || value.trim().isEmpty) {
       return 'هذا الحقل لا يمكن ان يكون فارغاً';
     } else if (fieldType == 'name') {
-      if (!RegExp(r'^[a-zA-z\s]+$').hasMatch(value)) {
+      if (!RegExp(r'^[a-zA-z\sأ-ي]+$').hasMatch(value)) {
         return _primaryMessage.replaceAll('0', 'إسم');
       }
     } else if (fieldType == 'code') {

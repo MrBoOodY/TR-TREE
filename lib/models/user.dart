@@ -5,15 +5,13 @@ class User {
   String? displayName;
   String? email;
   String? uid;
-  String? city;
-  String? address;
+  double? availablePoints;
   User({
     this.userType,
     this.displayName,
     this.email,
     this.uid,
-    this.city,
-    this.address,
+    this.availablePoints,
   });
 
   User copyWith({
@@ -21,16 +19,14 @@ class User {
     String? displayName,
     String? email,
     String? uid,
-    String? city,
-    String? address,
+    double? availablePoints,
   }) {
     return User(
       userType: userType ?? this.userType,
       displayName: displayName ?? this.displayName,
       email: email ?? this.email,
       uid: uid ?? this.uid,
-      city: city ?? this.city,
-      address: address ?? this.address,
+      availablePoints: availablePoints ?? this.availablePoints,
     );
   }
 
@@ -40,8 +36,7 @@ class User {
       'displayName': displayName,
       'email': email,
       'uid': uid,
-      'city': city,
-      'address': address,
+      'availablePoints': availablePoints,
     };
   }
 
@@ -51,8 +46,7 @@ class User {
       displayName: map['displayName'],
       email: map['email'],
       uid: map['uid'],
-      city: map['city'],
-      address: map['address'],
+      availablePoints: map['availablePoints']?.toDouble(),
     );
   }
 
@@ -62,7 +56,7 @@ class User {
 
   @override
   String toString() {
-    return 'User(userType: $userType, displayName: $displayName, email: $email, uid: $uid, city: $city, address: $address)';
+    return 'User(userType: $userType, displayName: $displayName, email: $email, uid: $uid, availablePoints: $availablePoints)';
   }
 
   @override
@@ -74,8 +68,7 @@ class User {
         other.displayName == displayName &&
         other.email == email &&
         other.uid == uid &&
-        other.city == city &&
-        other.address == address;
+        other.availablePoints == availablePoints;
   }
 
   @override
@@ -84,7 +77,6 @@ class User {
         displayName.hashCode ^
         email.hashCode ^
         uid.hashCode ^
-        city.hashCode ^
-        address.hashCode;
+        availablePoints.hashCode;
   }
 }

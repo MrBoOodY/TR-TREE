@@ -10,6 +10,7 @@ class SignButtonWidget extends StatelessWidget {
     this.width,
     this.fontSize,
     this.height,
+    this.fontWeight,
   }) : super(key: key);
   final VoidCallback onPressed;
   final String title;
@@ -17,6 +18,7 @@ class SignButtonWidget extends StatelessWidget {
   final double? width;
   final double? fontSize;
   final double? height;
+  final FontWeight? fontWeight;
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
@@ -38,7 +40,7 @@ class SignButtonWidget extends StatelessWidget {
           style: TextStyle(
               color: isOutLined ? AppColors.splashScreenColor : Colors.white,
               fontSize: fontSize ?? 16,
-              fontWeight: FontWeight.w600),
+              fontWeight: fontWeight ?? FontWeight.w600),
         ));
   }
 }

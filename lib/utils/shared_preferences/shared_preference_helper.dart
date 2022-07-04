@@ -48,7 +48,7 @@ class SharedPreferenceHelper {
   static bool checkKey(String key) => _sharedPreference.containsKey(key);
   static Future<bool> removeKey(String key) async =>
       await _sharedPreference.remove(key);
-  static Future reset() async {
+  static Future<void> reset() async {
     await init();
     await _sharedPreference.clear();
   }

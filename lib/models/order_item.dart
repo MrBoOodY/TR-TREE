@@ -4,19 +4,23 @@ import 'package:tr_tree/models/product.dart';
 
 class OrderItem {
   Product? product;
-  int? count;
+  int count = 0;
+  String? id;
   OrderItem({
     this.product,
-    this.count,
+    required this.count,
+    this.id,
   });
 
   OrderItem copyWith({
     Product? product,
     int? count,
+    String? id,
   }) {
     return OrderItem(
       product: product ?? this.product,
       count: count ?? this.count,
+      id: id ?? this.id,
     );
   }
 
@@ -24,13 +28,15 @@ class OrderItem {
     return {
       'product': product?.toMap(),
       'count': count,
+      'id': id,
     };
   }
 
   factory OrderItem.fromMap(Map<String, dynamic> map) {
     return OrderItem(
       product: map['product'] != null ? Product.fromMap(map['product']) : null,
-      count: map['count']?.toInt(),
+      count: map['count']?.toInt() ?? 0,
+      id: map['id'],
     );
   }
 
@@ -40,7 +46,7 @@ class OrderItem {
       OrderItem.fromMap(json.decode(source));
 
   @override
-  String toString() => 'OrderItem(product: $product, count: $count)';
+  String toString() => 'OrderItem(product: $product, count: $count, id: $id)';
 
   @override
   bool operator ==(Object other) {
@@ -48,9 +54,10 @@ class OrderItem {
 
     return other is OrderItem &&
         other.product == product &&
-        other.count == count;
+        other.count == count &&
+        other.id == id;
   }
 
   @override
-  int get hashCode => product.hashCode ^ count.hashCode;
+  int get hashCode => product.hashCode ^ count.hashCode ^ id.hashCode;
 }

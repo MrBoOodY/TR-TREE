@@ -1,45 +1,45 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:tr_tree/constants/app_themes.dart';
 import 'package:tr_tree/constants/app_validator.dart';
-import 'package:tr_tree/models/product.dart';
-import 'package:tr_tree/view_models/admin_view_models/product_view_model.dart';
+import 'package:tr_tree/models/coupon.dart';
+import 'package:tr_tree/view_models/admin_view_models/admin_coupons_view_model.dart';
 import 'package:tr_tree/widgets/sign_button_widget.dart';
 import 'package:tr_tree/widgets/text_field_widget.dart';
 
-class AddProductView extends StatefulWidget {
-  const AddProductView({Key? key}) : super(key: key);
+class AddCouponView extends StatefulWidget {
+  const AddCouponView({Key? key}) : super(key: key);
 
   @override
-  State<AddProductView> createState() => _AddProductViewState();
+  State<AddCouponView> createState() => _AddCouponViewState();
 }
 
-class _AddProductViewState extends State<AddProductView> {
+class _AddCouponViewState extends State<AddCouponView> {
   TextEditingController productName = TextEditingController();
-  TextEditingController pricePoints = TextEditingController();
-  TextEditingController priceEGP = TextEditingController();
-  TextEditingController minimumKG = TextEditingController();
+  TextEditingController discountValue = TextEditingController();
+  TextEditingController details = TextEditingController();
+  TextEditingController pointsDeductionValue = TextEditingController();
 
   File? pickedImage;
 
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   bool isInit = true;
-  Product? currentProduct;
+  Coupon? currentCoupon;
   @override
   void didChangeDependencies() {
     if (!isInit) {
       return;
     }
-    currentProduct = ModalRoute.of(context)?.settings.arguments as Product?;
-    if (currentProduct != null) {
-      productName.text = currentProduct?.name ?? '';
-      pricePoints.text = currentProduct?.pricePoints ?? '';
-      priceEGP.text = currentProduct?.priceEGP ?? '';
-      minimumKG.text = currentProduct?.minimumKG ?? '';
+    currentCoupon = ModalRoute.of(context)?.settings.arguments as Coupon?;
+    if (currentCoupon != null) {
+      productName.text = currentCoupon?.title ?? '';
+      discountValue.text = currentCoupon?.discountValue ?? '';
+      details.text = currentCoupon?.details ?? '';
+      pointsDeductionValue.text =
+          '${currentCoupon?.pointsDeductionValue ?? ''}';
     }
     isInit = false;
 
@@ -63,7 +63,7 @@ class _AddProductViewState extends State<AddProductView> {
                   const BackButton(),
                   const SizedBox(width: 10.0),
                   Text(
-                    '${currentProduct == null ? 'إضافة' : 'تعديل'} منتج',
+                    '${currentCoupon == null ? 'إضافة' : 'تعديل'} كوبون',
                     style: AppThemes.headTextStyle,
                   ),
                 ],
@@ -77,30 +77,28 @@ class _AddProductViewState extends State<AddProductView> {
               ),
               const SizedBox(height: 20.0),
               TextFieldWidget(
-                hint: 'سعر المنتج (جنيهات)',
+                hint: 'قيمة الخصم (%)',
                 validator: (value) =>
                     AppValidator.validateFields(value, '', context),
-                textController: priceEGP,
+                textController: discountValue,
                 inputType: TextInputType.number,
                 inputFormatters: [AppValidator.priceValueOnly()],
               ),
               const SizedBox(height: 20.0),
               TextFieldWidget(
-                hint: 'سعر المنتج (نقاط)',
-                textController: pricePoints,
+                hint: 'قيمة النقاط المطلوب سحبها',
                 validator: (value) =>
                     AppValidator.validateFields(value, '', context),
+                textController: pointsDeductionValue,
                 inputType: TextInputType.number,
                 inputFormatters: [AppValidator.priceValueOnly()],
               ),
               const SizedBox(height: 20.0),
               TextFieldWidget(
-                hint: 'الحد الأدني المسموح من الكيلوهات لكل طلبية',
-                textController: minimumKG,
+                hint: 'التفاصيل',
+                textController: details,
                 validator: (value) =>
                     AppValidator.validateFields(value, '', context),
-                inputType: TextInputType.number,
-                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
               ),
               const SizedBox(height: 20.0),
               Text(
@@ -132,9 +130,9 @@ class _AddProductViewState extends State<AddProductView> {
                             width: 75,
                             height: 75,
                           )
-                        else if (currentProduct?.image != null)
+                        else if (currentCoupon?.image != null)
                           Image.network(
-                            currentProduct!.image!,
+                            currentCoupon!.image!,
                             width: 75,
                             height: 75,
                           ),
@@ -153,22 +151,24 @@ class _AddProductViewState extends State<AddProductView> {
                       if (!formKey.currentState!.validate()) {
                         return;
                       }
-                      final Product product = Product(
-                        id: currentProduct?.id,
-                        minimumKG: minimumKG.text,
-                        name: productName.text,
-                        priceEGP: priceEGP.text,
-                        pricePoints: pricePoints.text,
+                      final Coupon coupon = Coupon(
+                        id: currentCoupon?.id,
+                        details: details.text,
+                        pointsDeductionValue:
+                            double.tryParse(pointsDeductionValue.text),
+                        discountValue: discountValue.text,
+                        title: productName.text,
                       );
-                      if (currentProduct != null) {
-                        Provider.of<AdminHomeViewModel>(context, listen: false)
-                            .editProduct(pickedImage, product, context);
+                      if (currentCoupon != null) {
+                        Provider.of<AdminCouponViewModel>(context,
+                                listen: false)
+                            .editCoupon(pickedImage, coupon, context);
                         return;
                       }
-                      Provider.of<AdminHomeViewModel>(context, listen: false)
-                          .addProduct(pickedImage, product, context);
+                      Provider.of<AdminCouponViewModel>(context, listen: false)
+                          .addCoupon(pickedImage, coupon, context);
                     },
-                    title: currentProduct == null ? 'إضافة' : 'تعديل',
+                    title: currentCoupon == null ? 'إضافة' : 'تعديل',
                     height: 0,
                     width: 3.5,
                   ),

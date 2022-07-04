@@ -2,41 +2,62 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 
 import 'package:tr_tree/models/order_item.dart';
-import 'package:tr_tree/models/user.dart';
 
 class Order {
   List<OrderItem> orderItems = [];
   String? id;
-  String? priceType;
+  bool isPointsPrice;
   String? status;
-  User? user;
+  String? city;
+  String? address;
+  String? userName;
+  DateTime? dateTime;
+  String? phone;
+  String? uid;
   Order({
     required this.orderItems,
     this.id,
-    this.priceType,
+    required this.isPointsPrice,
     this.status,
-    this.user,
+    this.city,
+    this.address,
+    this.userName,
+    this.dateTime,
+    this.phone,
+    this.uid,
   });
-  String get totalPrice {
-    return orderItems
-        .fold(
-            0.0,
-            (double a, OrderItem b) =>
-                a +
-                double.parse((priceType == 'egp'
-                        ? b.product?.priceEGP
-                        : b.product?.pricePoints) ??
-                    '0'))
-        .toString();
+  String get totalPriceName {
+    return '${orderItems.fold(0.0, (double previousPrice, OrderItem nextPrice) {
+      double newPrice = 0.0;
+      if (!isPointsPrice) {
+        newPrice = double.parse(nextPrice.product?.priceEGP ?? '0');
+      } else {
+        newPrice = double.parse(nextPrice.product?.pricePoints ?? '0');
+      }
+      newPrice = newPrice * nextPrice.count;
+      return previousPrice + newPrice;
+    })} ${isPointsPrice ? 'نقطة' : 'جنيه'}';
+  }
+
+  double get totalPrice {
+    return orderItems.fold(0.0, (double previousPrice, OrderItem nextPrice) {
+      double newPrice = 0.0;
+      if (!isPointsPrice) {
+        newPrice = double.parse(nextPrice.product?.priceEGP ?? '0');
+      } else {
+        newPrice = double.parse(nextPrice.product?.pricePoints ?? '0');
+      }
+      newPrice = newPrice * nextPrice.count;
+      return previousPrice + newPrice;
+    });
   }
 
   Color get orderColor {
-    if (status?.contains('تمت بنجاح') ?? false) {
+    if (status == OrderStatus.finished) {
       return Colors.yellow;
-    } else if (status?.contains('تم التأكيد') ?? false) {
+    } else if (status == OrderStatus.confirmed) {
       return Colors.orange;
     } else {
       return Colors.red;
@@ -46,26 +67,41 @@ class Order {
   Order copyWith({
     List<OrderItem>? orderItems,
     String? id,
-    String? priceType,
+    bool? isPointsPrice,
     String? status,
-    User? user,
+    String? city,
+    String? address,
+    String? userName,
+    DateTime? dateTime,
+    String? phone,
+    String? uid,
   }) {
     return Order(
       orderItems: orderItems ?? this.orderItems,
       id: id ?? this.id,
-      priceType: priceType ?? this.priceType,
+      isPointsPrice: isPointsPrice ?? this.isPointsPrice,
       status: status ?? this.status,
-      user: user ?? this.user,
+      city: city ?? this.city,
+      address: address ?? this.address,
+      userName: userName ?? this.userName,
+      dateTime: dateTime ?? this.dateTime,
+      phone: phone ?? this.phone,
+      uid: uid ?? this.uid,
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
       'orderItems': orderItems.map((x) => x.toMap()).toList(),
-      if (id != null) 'id': id,
-      if (priceType != null) 'priceType': priceType,
-      if (status != null) 'status': status,
-      if (user != null) 'user': user?.toMap(),
+      'id': id,
+      'isPointsPrice': isPointsPrice,
+      'status': status,
+      'city': city,
+      'address': address,
+      'userName': userName,
+      'dateTime': dateTime.toString(),
+      'phone': phone,
+      'uid': uid,
     };
   }
 
@@ -74,9 +110,15 @@ class Order {
       orderItems: List<OrderItem>.from(
           map['orderItems']?.map((x) => OrderItem.fromMap(x))),
       id: map['id'],
-      priceType: map['priceType'],
+      isPointsPrice: map['isPointsPrice'] ?? false,
       status: map['status'],
-      user: map['user'] != null ? User.fromMap(map['user']) : null,
+      city: map['city'],
+      address: map['address'],
+      userName: map['userName'],
+      dateTime:
+          map['dateTime'] != null ? DateTime.parse(map['dateTime']) : null,
+      phone: map['phone'],
+      uid: map['uid'],
     );
   }
 
@@ -86,7 +128,7 @@ class Order {
 
   @override
   String toString() {
-    return 'Order(orderItems: $orderItems, id: $id, priceType: $priceType, status: $status, user: $user)';
+    return 'Order(orderItems: $orderItems, id: $id, isPointsPrice: $isPointsPrice, status: $status, city: $city, address: $address, userName: $userName, dateTime: $dateTime, phone: $phone, uid: $uid)';
   }
 
   @override
@@ -96,17 +138,33 @@ class Order {
     return other is Order &&
         listEquals(other.orderItems, orderItems) &&
         other.id == id &&
-        other.priceType == priceType &&
+        other.isPointsPrice == isPointsPrice &&
         other.status == status &&
-        other.user == user;
+        other.city == city &&
+        other.address == address &&
+        other.userName == userName &&
+        other.dateTime == dateTime &&
+        other.phone == phone &&
+        other.uid == uid;
   }
 
   @override
   int get hashCode {
     return orderItems.hashCode ^
         id.hashCode ^
-        priceType.hashCode ^
+        isPointsPrice.hashCode ^
         status.hashCode ^
-        user.hashCode;
+        city.hashCode ^
+        address.hashCode ^
+        userName.hashCode ^
+        dateTime.hashCode ^
+        phone.hashCode ^
+        uid.hashCode;
   }
+}
+
+class OrderStatus {
+  static const String needConfirm = 'تحتاج للتأكيد';
+  static const String confirmed = 'تم التأكيد';
+  static const String finished = 'تمت بنجاح';
 }

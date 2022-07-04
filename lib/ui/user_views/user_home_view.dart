@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tr_tree/constants/app_colors.dart';
+import 'package:tr_tree/ui/user_views/user_coupons_tab.dart';
 import 'package:tr_tree/ui/user_views/user_home_tab.dart';
 import 'package:tr_tree/ui/user_views/user_notification_tab.dart';
 import 'package:tr_tree/ui/user_views/user_orders_tab.dart';
@@ -21,6 +22,8 @@ class _UserHomeViewState extends State<UserHomeView> {
         return const UserOrdersTab();
       case 2:
         return const UserNotificationTab();
+      case 3:
+        return const UserCouponsTab();
       default:
         return const UserHomeTab();
     }
@@ -32,6 +35,11 @@ class _UserHomeViewState extends State<UserHomeView> {
       body: SafeArea(child: currentPage()),
       bottomNavigationBar: BottomNavigationBar(
           selectedItemColor: AppColors.splashScreenColor,
+          currentIndex: currentIndex,
+          unselectedItemColor: AppColors.unSelectedTabIconColor,
+          unselectedLabelStyle:
+              const TextStyle(color: AppColors.unSelectedTabIconColor),
+          showUnselectedLabels: true,
           elevation: 0,
           onTap: (index) {
             currentIndex = index;
@@ -44,6 +52,8 @@ class _UserHomeViewState extends State<UserHomeView> {
                 icon: Icon(Icons.calendar_month_outlined), label: 'الطلبيات'),
             BottomNavigationBarItem(
                 icon: Icon(Icons.notifications_none), label: 'الاشعارات'),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.local_offer_outlined), label: 'الكوبونات'),
           ]),
     );
   }

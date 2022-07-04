@@ -15,6 +15,13 @@ class Product {
     this.minimumKG,
     this.image,
   });
+  String? getPriceBytype(bool isPoints) {
+    if (isPoints) {
+      return '$pricePoints نقطة';
+    } else {
+      return '$priceEGP جنيه';
+    }
+  }
 
   Product copyWith({
     String? priceEGP,

@@ -9,8 +9,6 @@ class SignUpViewModel {
       {required String email,
       required String password,
       required String userName,
-      required String city,
-      required String address,
       required BuildContext context}) async {
     final navigator = Navigator.of(context);
     try {
@@ -31,8 +29,6 @@ class SignUpViewModel {
         'displayName': user.displayName,
         'email': user.email,
         'uid': user.uid,
-        'city': city,
-        'address': address,
       }).onError((error, stackTrace) {
         if (kDebugMode) {
           print('Error save fire store: $error');
