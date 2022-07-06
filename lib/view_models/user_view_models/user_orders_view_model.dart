@@ -48,6 +48,7 @@ class UserOrdersViewModel extends ChangeNotifier {
 
   Future<void> getOrders() async {
     _orders = await FirebaseCollections.ordersCollection
+        .orderBy('dateTime', descending: true)
         .where('uid', isEqualTo: SharedPreferenceHelper.getUser?.uid ?? '')
         .get()
         .then((doc) => doc.docs

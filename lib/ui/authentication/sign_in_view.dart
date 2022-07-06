@@ -78,8 +78,8 @@ class SignInViewState extends State<SignInView> {
                   Utils.showLoading(context);
                   await Provider.of<SignInViewModel>(context, listen: false)
                       .loginWithEmailAdress(
-                    email.text,
-                    password.text,
+                    email.text.trim(),
+                    password.text.trim(),
                     context,
                   );
                   isSignUpLoading = false;

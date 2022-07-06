@@ -9,6 +9,7 @@ class ShipCompNotificationViewModel {
   List<NotificationMessage> get notificationMessages => _notificationMessages;
   Future<void> getNotifications() async {
     _notificationMessages = await FirebaseCollections.notificationsCollection
+        .orderBy('dateTime', descending: true)
         .where('to', isEqualTo: 'shipp')
         .get()
         .then((doc) => doc.docs

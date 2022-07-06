@@ -3,6 +3,7 @@ import 'package:tr_tree/constants/firebase_collections.dart';
 import 'package:tr_tree/models/notification_message.dart';
 import 'package:tr_tree/models/order.dart';
 import 'package:tr_tree/utils/utils.dart';
+import 'package:tr_tree/view_models/push_notification_service.dart';
 
 class AdminOrdersViewModel extends ChangeNotifier {
   late List<Order> _orders;
@@ -48,11 +49,13 @@ class AdminOrdersViewModel extends ChangeNotifier {
   List<Order> filteredOrders = [];
 
   Future<void> getOrders() async {
-    _orders = await FirebaseCollections.ordersCollection.get().then((doc) => doc
-        .docs
-        .map((orderDoc) =>
-            Order.fromMap(orderDoc.data() as Map<String, dynamic>))
-        .toList());
+    _orders = await FirebaseCollections.ordersCollection
+        .orderBy('dateTime', descending: true)
+        .get()
+        .then((doc) => doc.docs
+            .map((orderDoc) =>
+                Order.fromMap(orderDoc.data() as Map<String, dynamic>))
+            .toList());
   }
 
   List<Order> filterOrdersByStatus() {
@@ -105,6 +108,17 @@ class AdminOrdersViewModel extends ChangeNotifier {
         dateTime: DateTime.now(),
         title: 'طلبية جديدة تحتاج الي التوصيل',
       );
+      final deviceToken = await FirebaseCollections.userCollection
+          .doc(order.uid)
+          .get()
+          .then((value) => (value.data() as Map)['deviceToken']);
+      await PushNotificationService.sendNotification(
+          notificationMessageForUser.title, notificationMessageForUser.body,
+          deviceToken: deviceToken);
+      await PushNotificationService.sendNotification(
+          notificationMessageForDriver.title, notificationMessageForDriver.body,
+          topic: 'shipp');
+
       await FirebaseCollections.notificationsCollection
           .add(notificationMessageForUser.toMap());
       await FirebaseCollections.notificationsCollection
@@ -115,7 +129,7 @@ class AdminOrdersViewModel extends ChangeNotifier {
       notifyListeners();
       navigator.pop();
     } catch (error) {
-      Utils.showErrorDialog(error.toString(), context);
+      Utils.showErrorDialog(error.toString());
     } finally {
       navigator.pop();
     }

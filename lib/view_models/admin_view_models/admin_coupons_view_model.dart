@@ -7,17 +7,10 @@ import 'package:tr_tree/utils/utils.dart';
 import 'package:tr_tree/view_models/firebase_storage_service.dart';
 
 class AdminCouponViewModel {
-  AdminCouponViewModel() {
-    _coupons = [];
-  }
-  late List<Coupon> _coupons;
-  List<Coupon> get coupons => _coupons;
-  Future<void> getCoupons() async {
-    _coupons = await FirebaseCollections.couponsCollection.get().then((doc) =>
-        doc.docs
-            .map((couponDoc) =>
-                Coupon.fromMap(couponDoc.data() as Map<String, dynamic>))
-            .toList());
+  Stream getCoupons() {
+    return FirebaseCollections.couponsCollection
+        .snapshots()
+        .transform(Utils.transformer((json) => Coupon.fromMap(json)));
   }
 
   Future<void> addCoupon(
@@ -39,7 +32,7 @@ class AdminCouponViewModel {
       Utils.showToast('تمت الإضافة بنجاح');
       navigator.pop();
     } catch (error) {
-      Utils.showErrorDialog(error.toString(), context);
+      Utils.showErrorDialog(error.toString());
     } finally {
       navigator.pop();
     }
@@ -63,7 +56,22 @@ class AdminCouponViewModel {
       Utils.showToast('تم التعديل بنجاح');
       navigator.pop();
     } catch (error) {
-      Utils.showErrorDialog(error.toString(), context);
+      Utils.showErrorDialog(error.toString());
+    } finally {
+      navigator.pop();
+    }
+  }
+
+  Future<void> deleteCoupon(String couponID, BuildContext context) async {
+    final NavigatorState navigator = Navigator.of(context);
+
+    try {
+      Utils.showLoading(context);
+
+      await FirebaseCollections.couponsCollection.doc(couponID).delete();
+      Utils.showToast('تم الحذف بنجاح');
+    } catch (error) {
+      Utils.showErrorDialog(error.toString());
     } finally {
       navigator.pop();
     }

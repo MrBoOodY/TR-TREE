@@ -109,9 +109,9 @@ class SignUpViewState extends State<SignUpView> {
                 Utils.showLoading(context);
                 await Provider.of<SignUpViewModel>(context, listen: false)
                     .signUpWithEmailAdress(
-                  email: email.text,
-                  password: password.text,
-                  userName: '${firstName.text} ${lastName.text}',
+                  email: email.text.trim(),
+                  password: password.text.trim(),
+                  userName: '${firstName.text.trim()} ${lastName.text.trim()}',
                   context: context,
                 );
                 isSignUpLoading = false;

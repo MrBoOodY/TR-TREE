@@ -14,25 +14,28 @@ class AppTabBarWidget extends StatelessWidget {
   final ValueChanged<int>? onTap;
   @override
   Widget build(BuildContext context) {
-    return DecoratedBox(
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20.0),
-          color: Colors.grey.shade300),
-      child: Padding(
-        padding: const EdgeInsets.all(4.0),
-        child: TabBar(
-          controller: tabController,
-          isScrollable: true,
-          indicator: BoxDecoration(
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 14.0),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20.0),
-            color: Colors.white,
+            color: Colors.grey.shade300),
+        child: Padding(
+          padding: const EdgeInsets.all(4.0),
+          child: TabBar(
+            controller: tabController,
+            isScrollable: true,
+            indicator: BoxDecoration(
+              borderRadius: BorderRadius.circular(20.0),
+              color: Colors.white,
+            ),
+            onTap: onTap,
+            labelColor: AppColors.splashScreenColor,
+            labelPadding:
+                const EdgeInsets.only(left: 20.0, right: 20.0, top: 2.0),
+            unselectedLabelColor: Colors.grey.shade700,
+            tabs: tabs,
           ),
-          onTap: onTap,
-          labelColor: AppColors.splashScreenColor,
-          labelPadding:
-              const EdgeInsets.only(left: 20.0, right: 20.0, top: 2.0),
-          unselectedLabelColor: Colors.grey.shade700,
-          tabs: tabs,
         ),
       ),
     );

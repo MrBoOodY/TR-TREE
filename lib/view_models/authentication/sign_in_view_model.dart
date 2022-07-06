@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:tr_tree/constants/firebase_collections.dart';
 import 'package:tr_tree/utils/routes.dart';
@@ -22,6 +23,9 @@ class SignInViewModel {
         await user.sendEmailVerification();
         Utils.showConfirmDialog(context, sendEmailVerficationAgain: true);
       } else {
+        await FirebaseCollections.userCollection.doc(user.uid).update({
+          'deviceToken': await FirebaseMessaging.instance.getToken(),
+        });
         return FirebaseCollections.userCollection
             .doc(user.uid)
             .get()
@@ -43,15 +47,16 @@ class SignInViewModel {
       }
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
-        Utils.showErrorDialog('المستخدم غير موجود', context);
+        Utils.showErrorDialog('المستخدم غير موجود');
       } else if (e.code == 'wrong-password') {
-        Utils.showErrorDialog('كلمة المرور غير صحيحة', context);
+        Utils.showErrorDialog('كلمة المرور غير صحيحة');
       } else if (e.code.contains('invalid-email')) {
-        Utils.showErrorDialog('بريد الكتروني غير صالح', context);
+        Utils.showErrorDialog('بريد الكتروني غير صالح');
       }
     } catch (error) {
+      Utils.showErrorDialog('$error');
+    } finally {
       navigator.pop();
-      Utils.showErrorDialog('$error', context);
     }
   }
 }

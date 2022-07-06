@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:tr_tree/constants/app_colors.dart';
@@ -21,7 +24,7 @@ class Utils {
 
   static void showServerError(BuildContext context) {
     Navigator.pop(context);
-    Utils.showErrorDialog('خطأ من الخادم الوكيل', context);
+    showErrorDialog('خطأ من الخادم الوكيل');
     return;
   }
 
@@ -64,10 +67,22 @@ class Utils {
         fontSize: 14.0);
   }
 
-  static void showErrorDialog(String text, BuildContext context) {
+  static void showErrorDialog(String text) {
     showToast(
       text,
       color: Colors.red,
     );
   }
+
+  static StreamTransformer<QuerySnapshot<Map<String, dynamic>>, dynamic>
+      transformer<T>(T Function(Map<String, dynamic> json) fromJson) =>
+          StreamTransformer<QuerySnapshot<Map<String, dynamic>>,
+              List<T>>.fromHandlers(
+            handleData: (data, sink) {
+              final List<Map<String, dynamic>> snaps =
+                  data.docs.map((doc) => doc.data()).toList();
+              final list = snaps.map((json) => fromJson(json)).toList();
+              sink.add(list);
+            },
+          );
 }

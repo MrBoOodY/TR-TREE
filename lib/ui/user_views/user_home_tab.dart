@@ -32,7 +32,7 @@ class _UserHomeTabState extends State<UserHomeTab>
     future = userHomeTabViewModel.getProducts();
     tabController = TabController(
         initialIndex: userHomeTabViewModel.isCurrentViewPoints ? 0 : 1,
-        length: 2,
+        length: 3,
         vsync: this);
     super.initState();
   }
@@ -57,99 +57,130 @@ class _UserHomeTabState extends State<UserHomeTab>
             tabs: const [
               Text('نقاط'),
               Text('اموال'),
+              Text('نقاطي'),
             ]),
         const SizedBox(height: 10.0),
         Consumer<UserHomeTabViewModel>(
           builder: (_, userHomeTabViewModel, __) => Expanded(
-            child: FutureBuilder(
-              future: future,
-              builder: (context, snapshot) {
-                switch (snapshot.connectionState) {
-                  case ConnectionState.active:
-                  case ConnectionState.done:
-                    return Column(
-                      children: [
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.all(14.0),
-                            child: GridView.builder(
-                              gridDelegate:
-                                  const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2,
-                                crossAxisSpacing: 10.0,
-                                mainAxisSpacing: 10.0,
-                                childAspectRatio: 1,
-                              ),
-                              itemCount: userHomeTabViewModel.products.length,
-                              itemBuilder: (_, index) {
-                                return UserItemWidget(
-                                  isPointsPrice:
-                                      userHomeTabViewModel.isCurrentViewPoints,
-                                  orderItem:
-                                      userHomeTabViewModel.products[index],
-                                );
-                              },
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
+            child: tabController.index == 2
+                ? StreamBuilder<int>(
+                    stream: userHomeTabViewModel.getCurrentUserPoints(),
+                    builder: (context, snapshot) {
+                      return Center(
+                        child: Text('اجمالي نقاطي: ${snapshot.data ?? 0.0}'),
+                      );
+                    })
+                : FutureBuilder(
+                    future: future,
+                    builder: (context, snapshot) {
+                      switch (snapshot.connectionState) {
+                        case ConnectionState.active:
+                        case ConnectionState.done:
+                          return Column(
                             children: [
-                              const SizedBox(height: 10.0),
-                              const Divider(
-                                thickness: 1,
-                              ),
-                              const SizedBox(height: 10.0),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  const Text(
-                                    'اجمالي المبلغ المستحق',
+                              Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(14.0),
+                                  child: GridView.builder(
+                                    gridDelegate:
+                                        const SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount: 2,
+                                      crossAxisSpacing: 10.0,
+                                      mainAxisSpacing: 10.0,
+                                      childAspectRatio: 1,
+                                    ),
+                                    itemCount:
+                                        userHomeTabViewModel.products.length,
+                                    itemBuilder: (_, index) {
+                                      return UserItemWidget(
+                                        isPointsPrice: userHomeTabViewModel
+                                            .isCurrentViewPoints,
+                                        orderItem: userHomeTabViewModel
+                                            .products[index],
+                                      );
+                                    },
                                   ),
-                                  Text(userHomeTabViewModel
-                                      .currentOrder.totalPriceName),
-                                ],
+                                ),
                               ),
-                              const SizedBox(height: 10.0),
-                              SignButtonWidget(
-                                onPressed: () {
-                                  if (userHomeTabViewModel
-                                          .currentOrder.orderItems
-                                          .fold(
-                                              0,
-                                              (int previousValue,
-                                                      OrderItem next) =>
-                                                  previousValue + next.count) !=
-                                      0) {
-                                    Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                            builder: (_) =>
-                                                const SubmitOrderView()));
-                                  } else {
-                                    Utils.showToast(
-                                      'حدد عدد لمنتج واحد علي الأقل',
-                                      color: Colors.red,
-                                    );
-                                  }
-                                },
-                                title: 'بدل الأن',
-                                fontWeight: FontWeight.w700,
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 10.0),
+                                child: Column(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.stretch,
+                                  children: [
+                                    const SizedBox(height: 10.0),
+                                    const Divider(
+                                      thickness: 1,
+                                    ),
+                                    const SizedBox(height: 10.0),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        const Text(
+                                          'الاجمالي',
+                                        ),
+                                        Text(userHomeTabViewModel
+                                            .currentOrder.totalPriceName),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 10.0),
+                                    SignButtonWidget(
+                                      onPressed: () {
+                                        final product = userHomeTabViewModel
+                                            .currentOrder.orderItems
+                                            .where((e) =>
+                                                (int.parse(
+                                                    e.product?.minimumKG ??
+                                                        '1')) >
+                                                e.count)
+                                            .toList();
+                                        if (product.isNotEmpty &&
+                                            product.length ==
+                                                userHomeTabViewModel
+                                                    .currentOrder
+                                                    .orderItems
+                                                    .length) {
+                                          Utils.showErrorDialog(
+                                              'الكمية المطلوبة اقل من الحد الأدني من ${product.first.product?.name ?? ''}');
+                                          return;
+                                        }
+                                        if (userHomeTabViewModel
+                                                .currentOrder.orderItems
+                                                .fold(
+                                                    0,
+                                                    (int previousValue,
+                                                            OrderItem next) =>
+                                                        previousValue +
+                                                        next.count) !=
+                                            0) {
+                                          Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                  builder: (_) =>
+                                                      const SubmitOrderView()));
+                                        } else {
+                                          Utils.showToast(
+                                            'حدد عدد لمنتج واحد علي الأقل',
+                                            color: Colors.red,
+                                          );
+                                        }
+                                      },
+                                      title: 'بدل الأن',
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ],
+                                ),
                               ),
                             ],
-                          ),
-                        ),
-                      ],
-                    );
-                  case ConnectionState.waiting:
-                  default:
-                    return const LoadingWidget(
-                        color: AppColors.splashScreenColor);
-                }
-              },
-            ),
+                          );
+                        case ConnectionState.waiting:
+                        default:
+                          return const LoadingWidget(
+                              color: AppColors.splashScreenColor);
+                      }
+                    },
+                  ),
           ),
         )
       ],

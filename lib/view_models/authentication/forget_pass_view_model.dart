@@ -13,11 +13,15 @@ class ForgetPassViewModel {
       navigator.pop();
       if (error.toString().contains(
           'There is no user record corresponding to this identifier')) {
-        Utils.showErrorDialog('تعذر العثور علي هذا الحساب', context);
+        Utils.showErrorDialog(
+          'تعذر العثور علي هذا الحساب',
+        );
         return null;
       }
       if (error.toString().contains('The email address is badly formatted')) {
-        Utils.showErrorDialog('بريد الكتروني غير صالح', context);
+        Utils.showErrorDialog(
+          'بريد الكتروني غير صالح',
+        );
         return;
       }
     });

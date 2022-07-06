@@ -1,19 +1,15 @@
+import 'dart:async';
 import 'package:tr_tree/constants/firebase_collections.dart';
 import 'package:tr_tree/models/notification_message.dart';
+import 'package:tr_tree/utils/utils.dart';
 
 class AdminNotificationViewModel {
-  AdminNotificationViewModel() {
-    _notificationMessages = [];
-  }
-  late List<NotificationMessage> _notificationMessages;
-  List<NotificationMessage> get notificationMessages => _notificationMessages;
-  Future<void> getNotifications() async {
-    _notificationMessages = await FirebaseCollections.notificationsCollection
+  Stream getNotifications() {
+    return FirebaseCollections.notificationsCollection
+        .orderBy('dateTime', descending: true)
         .where('to', isEqualTo: 'admin')
-        .get()
-        .then((doc) => doc.docs
-            .map((notificationDoc) => NotificationMessage.fromMap(
-                notificationDoc.data() as Map<String, dynamic>))
-            .toList());
+        .snapshots()
+        .transform(
+            Utils.transformer((json) => NotificationMessage.fromMap(json)));
   }
 }

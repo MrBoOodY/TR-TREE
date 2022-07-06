@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:tr_tree/constants/app_colors.dart';
+import 'package:tr_tree/models/coupon.dart';
 import 'package:tr_tree/utils/routes.dart';
 import 'package:tr_tree/view_models/admin_view_models/admin_coupons_view_model.dart';
 import 'package:tr_tree/widgets/coupon_tile_widget.dart';
@@ -17,10 +18,10 @@ class AdminCouponsTab extends StatefulWidget {
 }
 
 class _AdminCouponsTabState extends State<AdminCouponsTab> {
-  late Future<void> _future;
+  late Stream stream;
   late AdminCouponViewModel adminCouponViewModel;
   void getCoupons() {
-    _future = adminCouponViewModel.getCoupons();
+    stream = adminCouponViewModel.getCoupons();
     if (mounted) {
       setState(() {});
     }
@@ -43,17 +44,18 @@ class _AdminCouponsTabState extends State<AdminCouponsTab> {
         Expanded(
           child: Padding(
             padding: const EdgeInsets.all(14.0),
-            child: FutureBuilder(
-                future: _future,
+            child: StreamBuilder(
+                stream: stream,
                 builder: (_, snapshot) {
                   switch (snapshot.connectionState) {
                     case ConnectionState.active:
                     case ConnectionState.done:
+                      List<Coupon> coupons =
+                          (snapshot.data as List<Coupon>?) ?? [];
                       return ListView.builder(
-                        itemCount: adminCouponViewModel.coupons.length,
+                        itemCount: coupons.length,
                         itemBuilder: (_, index) => CouponTileWidget(
-                            reInit: getCoupons,
-                            coupon: adminCouponViewModel.coupons[index]),
+                            reInit: getCoupons, coupon: coupons[index]),
                       );
                     case ConnectionState.waiting:
                     default:

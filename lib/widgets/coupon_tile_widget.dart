@@ -5,6 +5,7 @@ import 'package:tr_tree/constants/app_themes.dart';
 import 'package:tr_tree/models/coupon.dart';
 import 'package:tr_tree/utils/routes.dart';
 import 'package:tr_tree/utils/shared_preferences/shared_preference_helper.dart';
+import 'package:tr_tree/view_models/admin_view_models/admin_coupons_view_model.dart';
 import 'package:tr_tree/view_models/user_view_models/user_coupons_view_model.dart';
 import 'package:tr_tree/widgets/sign_button_widget.dart';
 
@@ -130,7 +131,27 @@ class CouponTileWidget extends StatelessWidget {
                 ),
               ),
             ),
-          )
+          ),
+          if (userType == 'admin')
+            Positioned(
+              top: -12.0,
+              right: -12.0,
+              child: CircleAvatar(
+                radius: 15.0,
+                backgroundColor: Colors.red,
+                child: IconButton(
+                  padding: EdgeInsets.zero,
+                  onPressed: () {
+                    Provider.of<AdminCouponViewModel>(context, listen: false)
+                        .deleteCoupon(coupon.id ?? '', context);
+                  },
+                  icon: const Icon(
+                    Icons.clear,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            )
         ],
       ),
     );

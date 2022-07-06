@@ -24,6 +24,7 @@ class UserItemWidget extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
         child: Column(children: [
           const Spacer(),
+          const Spacer(),
           Image.network(
             orderItem.product?.image ?? '',
             width: 75.0,
@@ -42,6 +43,17 @@ class UserItemWidget extends StatelessWidget {
             ],
           ),
           const Spacer(),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text('الحد الأدني'),
+              Text(
+                orderItem.product?.minimumKG ?? '',
+                style: AppThemes.headTextStyle
+                    .copyWith(fontSize: 12, fontWeight: FontWeight.normal),
+              )
+            ],
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [

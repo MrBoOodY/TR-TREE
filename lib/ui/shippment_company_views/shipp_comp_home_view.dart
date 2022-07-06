@@ -1,7 +1,9 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:tr_tree/constants/app_colors.dart';
 import 'package:tr_tree/ui/shippment_company_views/shipp_comp_orders_tab.dart';
 import 'package:tr_tree/ui/shippment_company_views/shipp_comp_notification_tab.dart';
+import 'package:tr_tree/view_models/push_notification_service.dart';
 
 class ShippCompHomeView extends StatefulWidget {
   const ShippCompHomeView({Key? key}) : super(key: key);
@@ -21,6 +23,15 @@ class _ShippCompHomeViewState extends State<ShippCompHomeView> {
       default:
         return const ShippCompOrdersTab();
     }
+  }
+
+  @override
+  void initState() {
+    FirebaseMessaging.instance.subscribeToTopic('shipp');
+
+    PushNotificationService pushNotificationService = PushNotificationService();
+    pushNotificationService.receiveAll(context);
+    super.initState();
   }
 
   @override

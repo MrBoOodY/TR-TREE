@@ -6,6 +6,7 @@ import 'package:tr_tree/models/order_item.dart';
 import 'package:tr_tree/models/product.dart';
 import 'package:tr_tree/utils/shared_preferences/shared_preference_helper.dart';
 import 'package:tr_tree/utils/utils.dart';
+import 'package:tr_tree/view_models/push_notification_service.dart';
 
 class UserHomeTabViewModel extends ChangeNotifier {
   late List<OrderItem> _products;
@@ -45,6 +46,13 @@ class UserHomeTabViewModel extends ChangeNotifier {
       orderItems: _products.where((element) => element.count != 0).toList(),
       isPointsPrice: isCurrentViewPoints,
     );
+  }
+
+  Stream<int> getCurrentUserPoints() {
+    return FirebaseCollections.userCollection
+        .doc(SharedPreferenceHelper.getUser?.uid ?? '')
+        .snapshots()
+        .map((event) => (event.data() as Map)['availablePoints']);
   }
 
   Future<void> getProducts() async {
@@ -99,6 +107,9 @@ class UserHomeTabViewModel extends ChangeNotifier {
       await FirebaseCollections.ordersCollection
           .doc(id)
           .set(finalOrder.toMap());
+      await PushNotificationService.sendNotification(
+          notificationMessage.title, notificationMessage.body,
+          topic: notificationMessage.to);
       await FirebaseCollections.notificationsCollection
           .add(notificationMessage.toMap());
       for (var element in _products) {
@@ -107,7 +118,9 @@ class UserHomeTabViewModel extends ChangeNotifier {
       notifyListeners();
       navigator.pop();
     } catch (error) {
-      Utils.showErrorDialog(error.toString(), context);
+      Utils.showErrorDialog(
+        error.toString(),
+      );
     } finally {
       navigator.pop();
     }

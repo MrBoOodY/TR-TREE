@@ -6,12 +6,14 @@ class User {
   String? email;
   String? uid;
   double? availablePoints;
+  String? deviceToken;
   User({
     this.userType,
     this.displayName,
     this.email,
     this.uid,
     this.availablePoints,
+    this.deviceToken,
   });
 
   User copyWith({
@@ -20,6 +22,7 @@ class User {
     String? email,
     String? uid,
     double? availablePoints,
+    String? deviceToken,
   }) {
     return User(
       userType: userType ?? this.userType,
@@ -27,6 +30,7 @@ class User {
       email: email ?? this.email,
       uid: uid ?? this.uid,
       availablePoints: availablePoints ?? this.availablePoints,
+      deviceToken: deviceToken ?? this.deviceToken,
     );
   }
 
@@ -37,6 +41,7 @@ class User {
       'email': email,
       'uid': uid,
       'availablePoints': availablePoints,
+      'deviceToken': deviceToken,
     };
   }
 
@@ -47,6 +52,7 @@ class User {
       email: map['email'],
       uid: map['uid'],
       availablePoints: map['availablePoints']?.toDouble(),
+      deviceToken: map['deviceToken'],
     );
   }
 
@@ -56,7 +62,7 @@ class User {
 
   @override
   String toString() {
-    return 'User(userType: $userType, displayName: $displayName, email: $email, uid: $uid, availablePoints: $availablePoints)';
+    return 'User(userType: $userType, displayName: $displayName, email: $email, uid: $uid, availablePoints: $availablePoints, deviceToken: $deviceToken)';
   }
 
   @override
@@ -68,7 +74,8 @@ class User {
         other.displayName == displayName &&
         other.email == email &&
         other.uid == uid &&
-        other.availablePoints == availablePoints;
+        other.availablePoints == availablePoints &&
+        other.deviceToken == deviceToken;
   }
 
   @override
@@ -77,6 +84,7 @@ class User {
         displayName.hashCode ^
         email.hashCode ^
         uid.hashCode ^
-        availablePoints.hashCode;
+        availablePoints.hashCode ^
+        deviceToken.hashCode;
   }
 }

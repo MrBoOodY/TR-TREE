@@ -37,7 +37,7 @@ class AdminHomeViewModel {
       Utils.showToast('تمت الإضافة بنجاح');
       navigator.pop();
     } catch (error) {
-      Utils.showErrorDialog(error.toString(), context);
+      Utils.showErrorDialog(error.toString());
     } finally {
       navigator.pop();
     }
@@ -60,7 +60,9 @@ class AdminHomeViewModel {
       Utils.showToast('تم التعديل بنجاح');
       navigator.pop();
     } catch (error) {
-      Utils.showErrorDialog(error.toString(), context);
+      Utils.showErrorDialog(
+        error.toString(),
+      );
     }
   }
 }

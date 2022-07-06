@@ -11,6 +11,7 @@ import 'package:tr_tree/view_models/authentication/forget_pass_view_model.dart';
 import 'package:tr_tree/view_models/authentication/sign_in_view_model.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:tr_tree/view_models/authentication/sign_up_view_model.dart';
+import 'package:tr_tree/view_models/push_notification_service.dart';
 import 'package:tr_tree/view_models/shipp_comp_view_models/ship_comp_notification_view_model.dart';
 import 'package:tr_tree/view_models/shipp_comp_view_models/shipp_comp_orders_view_model.dart';
 import 'package:tr_tree/view_models/user_view_models/user_coupons_view_model.dart';
@@ -23,6 +24,9 @@ import 'view_models/user_view_models/user_home_tab_view_model.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+
+  PushNotificationService pushNotificationService = PushNotificationService();
+  await pushNotificationService.initNotifications();
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitDown,
     DeviceOrientation.portraitUp,

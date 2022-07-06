@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:tr_tree/constants/firebase_collections.dart';
@@ -29,6 +30,7 @@ class SignUpViewModel {
         'displayName': user.displayName,
         'email': user.email,
         'uid': user.uid,
+        'deviceToken': await FirebaseMessaging.instance.getToken(),
       }).onError((error, stackTrace) {
         if (kDebugMode) {
           print('Error save fire store: $error');
@@ -41,18 +43,28 @@ class SignUpViewModel {
     } on FirebaseAuthException catch (e) {
       navigator.pop();
       if (e.code == 'weak-password') {
-        Utils.showErrorDialog('كلمة المرور ضعيفة', context);
+        Utils.showErrorDialog(
+          'كلمة المرور ضعيفة',
+        );
       } else if (e.code == 'email-already-in-use') {
-        Utils.showErrorDialog('هذا البريد مستخدم من قبل', context);
+        Utils.showErrorDialog(
+          'هذا البريد مستخدم من قبل',
+        );
       } else if (e.code.contains('invalid-email')) {
-        Utils.showErrorDialog('بريد الكتروني غير صالح', context);
+        Utils.showErrorDialog(
+          'بريد الكتروني غير صالح',
+        );
       } else {
-        Utils.showErrorDialog(e.message.toString(), context);
+        Utils.showErrorDialog(
+          e.message.toString(),
+        );
       }
     } catch (error) {
+      Utils.showErrorDialog(
+        '$error',
+      );
+    } finally {
       navigator.pop();
-
-      Utils.showErrorDialog('$error', context);
     }
   }
 }

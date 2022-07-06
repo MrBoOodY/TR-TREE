@@ -1,9 +1,11 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:tr_tree/constants/app_colors.dart';
 import 'package:tr_tree/ui/admin_views/admin_coupons_tab.dart';
 import 'package:tr_tree/ui/admin_views/admin_home_tab.dart';
 import 'package:tr_tree/ui/admin_views/admin_notification_tab.dart';
 import 'package:tr_tree/ui/admin_views/admin_orders_tab.dart';
+import 'package:tr_tree/view_models/push_notification_service.dart';
 
 class AdminHomeView extends StatefulWidget {
   const AdminHomeView({Key? key}) : super(key: key);
@@ -27,6 +29,14 @@ class _AdminHomeViewState extends State<AdminHomeView> {
       default:
         return const AdminHomeTab();
     }
+  }
+
+  @override
+  void initState() {
+    FirebaseMessaging.instance.subscribeToTopic('admin');
+    PushNotificationService pushNotificationService = PushNotificationService();
+    pushNotificationService.receiveAll(context);
+    super.initState();
   }
 
   @override

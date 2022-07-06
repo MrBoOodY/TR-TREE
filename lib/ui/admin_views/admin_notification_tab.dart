@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:tr_tree/constants/app_colors.dart';
 import 'package:tr_tree/constants/app_themes.dart';
+import 'package:tr_tree/models/notification_message.dart';
 import 'package:tr_tree/view_models/admin_view_models/admin_notification_view_model.dart';
 import 'package:tr_tree/widgets/custom_app_header_widget.dart';
 import 'package:tr_tree/widgets/loading_widget.dart';
@@ -15,14 +16,14 @@ class AdminNotificationTab extends StatefulWidget {
 }
 
 class _AdminNotificationTabState extends State<AdminNotificationTab> {
-  late Future<void> future;
+  late Stream stream;
   late AdminNotificationViewModel adminNotificationViewModel;
   @override
   void initState() {
     adminNotificationViewModel =
         Provider.of<AdminNotificationViewModel>(context, listen: false);
 
-    future = adminNotificationViewModel.getNotifications();
+    stream = adminNotificationViewModel.getNotifications();
     super.initState();
   }
 
@@ -34,15 +35,16 @@ class _AdminNotificationTabState extends State<AdminNotificationTab> {
         Expanded(
           child: Padding(
             padding: const EdgeInsets.all(14.0),
-            child: FutureBuilder(
-              future: future,
+            child: StreamBuilder(
+              stream: stream,
               builder: (context, snapshot) {
                 switch (snapshot.connectionState) {
                   case ConnectionState.done:
                   case ConnectionState.active:
+                    List<NotificationMessage> notificationMessages =
+                        (snapshot.data as List<NotificationMessage>?) ?? [];
                     return ListView.separated(
-                      itemCount: adminNotificationViewModel
-                          .notificationMessages.length,
+                      itemCount: notificationMessages.length,
                       separatorBuilder: (_, __) => const Divider(
                         thickness: 1,
                       ),
@@ -51,22 +53,19 @@ class _AdminNotificationTabState extends State<AdminNotificationTab> {
                           Row(
                             children: [
                               Text(
-                                adminNotificationViewModel
-                                    .notificationMessages[index].title,
+                                notificationMessages[index].title,
                                 style: AppThemes.headTextStyleColored,
                               ),
                               const Spacer(),
                               Text(
                                 DateFormat.yMd('ar').format(
-                                    adminNotificationViewModel
-                                        .notificationMessages[index].dateTime),
+                                    notificationMessages[index].dateTime),
                                 style: TextStyle(color: Colors.grey.shade600),
                               )
                             ],
                           ),
                           const SizedBox(height: 10.0),
-                          Text(adminNotificationViewModel
-                              .notificationMessages[index].body),
+                          Text(notificationMessages[index].body),
                         ],
                       ),
                     );

@@ -4,6 +4,7 @@ import 'package:tr_tree/ui/user_views/user_coupons_tab.dart';
 import 'package:tr_tree/ui/user_views/user_home_tab.dart';
 import 'package:tr_tree/ui/user_views/user_notification_tab.dart';
 import 'package:tr_tree/ui/user_views/user_orders_tab.dart';
+import 'package:tr_tree/view_models/push_notification_service.dart';
 
 class UserHomeView extends StatefulWidget {
   const UserHomeView({Key? key}) : super(key: key);
@@ -27,6 +28,13 @@ class _UserHomeViewState extends State<UserHomeView> {
       default:
         return const UserHomeTab();
     }
+  }
+
+  @override
+  void initState() {
+    PushNotificationService pushNotificationService = PushNotificationService();
+    pushNotificationService.receiveAll(context);
+    super.initState();
   }
 
   @override
