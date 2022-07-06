@@ -53,78 +53,7 @@ class PushNotificationService {
           onSelectNotification: (_) async {});
     });
   }
-/* 
-  static Future<void> onSelectHandler(
-      String? payload, BuildContext context) async {
-    final Map decodedPayload = jsonDecode(payload ?? '');
-
-    final String pushType = decodedPayload['pushType'];
-    BusinessConnection? businessConnection;
-    if (decodedPayload['businessConnectionId'] != null) {
-      businessConnection = await _businessBaseService
-          .getBusinessConnection(decodedPayload['businessConnectionId']);
-    }
-    UserType? currentBusinessType;
-    if (SharedPreferenceHelper.getCurrentUserType != null) {
-      currentBusinessType = SharedPreferenceHelper.getCurrentUserType;
-    }
-
-    if (pushType == PushNotification.chatMessage.name) {
-      if (businessConnection == null) {
-        return;
-      }
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (_) => ChatView(
-                    businessConnection: businessConnection!,
-                  )));
-    } else if (pushType.contains('order') ||
-        pushType == PushNotification.orderDeliveryChanged.name) {
-      if (businessConnection == null || currentBusinessType == null) {
-        return;
-      }
-      Navigator.of(context, rootNavigator: true).pushNamed(
-        Routes.orderRequestConfirmation,
-        arguments: OrderReqParameter(
-            businessType: currentBusinessType,
-            isChatView: true,
-            businessConnectionId: businessConnection.id,
-            orderId: decodedPayload['orderId'],
-            isViewOrder: true),
-      );
-    } else if (pushType == PushNotification.supplierItemUpdated.name) {
-      if (businessConnection == null || currentBusinessType == null) {
-        return;
-      }
-      if (currentBusinessType == UserType.RESTAURANT) {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (_) => AddOrderListView(
-                      businessConnection: businessConnection!,
-                      isUpdating: true,
-                    )));
-      } else {
-        Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
-            builder: (_) => SupplyListsView(
-                  businessConnectionId: businessConnection!.id,
-                )));
-      }
-    } else if (pushType == PushNotification.catalogItemUpdated.name) {
-      if (businessConnection == null) {
-        return;
-      }
-      Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
-          builder: (_) => BrowseCatalogView(
-                businessConnection: businessConnection!,
-              )));
-    } else if (pushType == PushNotification.cutOffTimeUpdated.name) {
-      if (businessConnection == null) {
-        return;
-      }
-    }
-  } */
+ 
 
   void onMessageNotification(BuildContext context) {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
@@ -136,45 +65,7 @@ class PushNotificationService {
   static Future<void> notificationHandler(RemoteMessage message) async {
     showNotification(message.notification?.title ?? '',
         message.notification?.body ?? '', '');
-    /*  if (message.notification != null && message.data.isNotEmpty) {
-      await SharedPreferenceHelper.init();
-      final String pushType = message.data['pushType'];
-      String title = '';
-      if (message.data['titleAr'] != null && message.data['titleEn'] != null) {
-        title = SharedPreferenceHelper.currentLanguage == 'ar'
-            ? message.data['titleAr']
-            : message.data['titleEn'];
-      } else {
-        title = message.notification?.title ?? '';
-      }
-      String body = '';
-      if (message.data['bodyAr'] != null && message.data['bodyEn'] != null) {
-        body = SharedPreferenceHelper.currentLanguage == 'ar'
-            ? message.data['bodyAr']
-            : message.data['bodyEn'];
-      } else {
-        body = message.notification?.body ?? '';
-      }
-      if (pushType == PushNotification.chatMessage.name) {
-        showNotification(title, message.notification!.body!, message.data);
-      } else if (pushType.contains('order') ||
-          pushType == PushNotification.orderDeliveryChanged.name) {
-        if (pushType == PushNotification.orderConfirmed.name) {
-          final String date = intl.DateFormat(
-                  SharedPreferenceHelper.currentLanguage == 'ar'
-                      ? 'd MMM'
-                      : 'MMM d',
-                  SharedPreferenceHelper.currentLanguage)
-              .format(message.data['deliveryDate']);
-          body = body.replaceAll('{0}', date);
-        }
-        showNotification(title, body, message.data);
-      } else if (pushType == PushNotification.supplierItemUpdated.name ||
-          pushType == PushNotification.catalogItemUpdated.name ||
-          pushType == PushNotification.cutOffTimeUpdated.name) {
-        showNotification(title, body, message.data);
-      }
-    } */
+    
   }
 
   void onBackgroundMessageNotification() {
@@ -244,7 +135,7 @@ class PushNotificationService {
       await http.post(url,
           headers: {
             'Authorization':
-                'Bearer AAAAJ6I2rG8:APA91bGSyfN4L3IU7gLqf66zCLlTxgekUMp0WFPjgMqSNXjVmK3ydbpACRt3992hwwsg4Y89M3KCSSAmxFcLvD8-nRlivyZGodxBRZqmnJUZahLWBCOVkTxp23Oxob_jTBWXexEFZuA1',
+                'Bearer ',
             'Content-Type': 'application/json'
           },
           body: jsonEncode(payload));
